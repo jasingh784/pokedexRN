@@ -1,13 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native-paper';
+import { Provider as PaperProvider } from 'react-native-paper';
+import PokemonCard from './components/PokemonCard';
+
 
 export default function App() {
+  const [pokemon, setPokemon] = useState({})
+
+  useEffect(() => {
+    const getPokemonData = async () => {
+      const res = await fetch('https://pokeapi.co/api/v2/pokemon/7');
+      const data = await res.json();
+      setPokemon(data);
+    }
+    getPokemonData();
+  }, [])
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <View style={styles.container}>
+        {!pokemon ? <ActivityIndicator/> : (
+          <PokemonCard name = {pokemon.name}/>
+        )}
+        <StatusBar style="auto" />
+      </View>
+    </PaperProvider>
   );
 }
 
